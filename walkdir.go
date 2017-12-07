@@ -9,9 +9,12 @@ import (
     "strings"
 )
 
-var wg sync.WaitGroup
-var semaphoreChan = make(chan struct{}, runtime.GOMAXPROCS(runtime.NumCPU()))
-var magicNumber = []byte{0x7F,0x45,0x4C,0x46}
+var (
+    wg sync.WaitGroup
+    semaphoreChan = make(chan struct{}, runtime.GOMAXPROCS(runtime.NumCPU()))
+    magicNumber = []byte{0x7F,0x45,0x4C,0x46}
+    hardIgnore = []string{".", "..", ".git"}
+)
 
 func main(){
     fmt.Println("\n")
@@ -34,7 +37,14 @@ func lsFiles(dir string, pattern string) {
         fmt.Println("error readding directory")
     }
 
+OutLoop:
     for _, f := range files {
+        for _, ignore := range hardIgnore {
+            if f.Name() == ignore {
+                continue OutLoop
+            }
+        }
+
         if f.IsDir() {
             wg.Add(1)
             go lsFiles(dir + "/" + f.Name(), pattern)
