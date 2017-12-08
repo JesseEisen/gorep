@@ -73,9 +73,13 @@ func SearchFile(filename, pattern string) {
         if err != nil {
             break
         }
-        first4 := []rune(line)
-        if strings.Compare(string(first4[:4]), string(magicNumber)) == 0 {
-            break;
+        
+        // only check once
+        if lineno == 1 {
+            first4 := []rune(line)
+            if strings.Compare(string(first4[:4]), string(magicNumber)) == 0 {
+                break;
+            }
         }
 
         lineno += 1
