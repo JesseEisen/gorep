@@ -76,8 +76,7 @@ func SearchFile(filename, pattern string) {
         
         // only check once
         if lineno == 1 {
-            first4 := []rune(line)
-            if strings.Compare(string(first4[:4]), string(magicNumber)) == 0 {
+            if strings.HasPrefix(line, string(magicNumber)){
                 break;
             }
         }
